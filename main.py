@@ -1,5 +1,7 @@
-from aiogram import bot, executor
 import logging
+from aiogram import bot, Dispatcher, executor, types
+from database import db
+import database
 from config import bot, dp
 from handler import fsmKrypto
 
@@ -9,6 +11,13 @@ async def on_startup(_):
 
 
 fsmKrypto.register_hanlers_fsmKrypto(dp)
+
+
+@dp.message_handler(commands=['start'])
+async def start(message: types.Message):
+    if message.chat.type == 'private':
+        pass
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
