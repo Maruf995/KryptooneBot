@@ -34,13 +34,8 @@ async def load_description(message: types.Message, state: FSMContext):
                              caption=f"Description: {data['description']}\n")
 
         await state.finish()
-        await message.answer("Реклама добавлена")
 
 
-def callback(call: types.CallbackQuery):
-    markup = InlineKeyboardMarkup()
-    button_call_2 = InlineKeyboardButton("Next", callback_data="button_call_2")
-    markup.add(button_call_2)
 
 
 
@@ -49,4 +44,3 @@ def register_hanlers_fsmKrypto(dp: Dispatcher):
     dp.register_message_handler(load_photo, state=fsmAdminKrypto.photo,
                                 content_types=['photo'])
     dp.register_message_handler(load_description, state=fsmAdminKrypto.description)
-    dp.register_callback_query_handler(lambda call: call.data == 'button_call_2')

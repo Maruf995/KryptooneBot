@@ -1,23 +1,25 @@
 import logging
 from aiogram import bot, Dispatcher, executor, types
 from database import db
-import database
 from config import bot, dp
 from handler import fsmKrypto
+from aiogram import Bot, Dispatcher
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from database.db import sql_create
+
+storage = MemoryStorage()
+
+Token = "5440801719:AAGJbB8p5PXTr4iOj063pGwcz7f5bbkfx20"
+bot = Bot(Token)
+dp = Dispatcher(bot=bot, storage=storage)
+ADMIN = [1121073609, 1684336348]
 
 
 async def on_startup(_):
-    print("Бот запушен!")
+    sql_create()
 
 
 fsmKrypto.register_hanlers_fsmKrypto(dp)
-
-
-@dp.message_handler(commands=['start'])
-async def start(message: types.Message):
-    if message.chat.type == 'private':
-        pass
-
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)

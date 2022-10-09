@@ -1,24 +1,42 @@
+import random
 import sqlite3
+from config import bot
 
 
-class Database:
-    def __init__(self, db_file):
-        self.connection = sqlite3.connect(db_file)
-        self.cursor = self.connection.cursor()
+def sql_create():
+    global db, cursor
+    db = sqlite3.connect("bot.sqlite3")
+    cursor = db.cursor()
 
-    def user_exist(self, user_id):
-        with self.connection:
-            result = self.cursor.execute("SELECT * FROM 'users' WHERE 'user_id' = ?", (user_id,)).fetchmany(1)
-            return bool(len(result))
+    if db:
+        print("База данных подключена!")
 
-        def add_user(self, user_id):
-            with self.connection:
-                return self.cursor.execute("INSERT INTO 'users' ('user_id') VALUES (?)", (user_id,))
+    db.execute("CREATE TABLE IF NOT EXISTS anketa "
+               "(id INTEGER PRIMARY KEY, "
+               "username TEXT, ")
+    db.commit()
 
-        def set_active(self, user_id, active):
-            with self.connection:
-                return self.cursor.execute("UPDATE 'users' SET 'active' = ? WHERE 'user_id' = ?", (active, user_id))
 
-        def get_user(self):
-            with self.connection:
-                return self.cursor.execute("SELECT 'user_id', 'active' FROM 'users'").fetchall()
+async def sql_command_insert(state):
+    async with state.proxy() as data:
+        cursor.execute("INSERT INTO anketa VALUES (?, ?,)",
+                       tuple(data.values()))
+    db.commit()
+
+
+async def sql_command_random(message):
+    result = cursor.execute("SELECT * FROM anketa").fetchall()
+    random_user = random.choice(result)
+    await bot.send_photo(message.from_user.id, random_user[2],
+                         caption=f"Decsription: {random_user[3]}\n")
+
+
+
+def sql_command_all():
+    user_list = cursor.execute("SELECT * FROM anketa").fetchall()
+    return user_list
+
+
+async def sql_command_delete(id):
+    cursor.execute("DELETE FROM anketa WHERE id == ?", (id,))
+    db.commit()
