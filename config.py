@@ -1,9 +1,11 @@
-from aiogram import Bot, Dispatcher
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
+import os
 
-storage = MemoryStorage()
+ADMIN = 1684336348
+users = [551254245, 1684336348]
 
-Token = "5440801719:AAGJbB8p5PXTr4iOj063pGwcz7f5bbkfx20"
-bot = Bot(Token)
-dp = Dispatcher(bot=bot, storage=storage)
-ADMIN = [1121073609, 1684336348]
+ip = os.getenv('ip')
+PGUSER = str(os.getenv('PGUSER'))
+PGPASSWORD = str(os.getenv('PGPASSWORD'))
+DATABASE = str(os.getenv('DATABASE'))
+
+POSTGRES_URI = f'postgresql://{PGUSER}:{PGPASSWORD}@{ip}/{DATABASE}'
