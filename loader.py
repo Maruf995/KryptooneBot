@@ -1,24 +1,15 @@
-from cgitb import handler
 from aiogram import Dispatcher, Bot, executor, types
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 import asyncio
 
+storage = MemoryStorage()
 
+from utils.db_api.db_gino import db
 
-from data import config
+import data.config as config
 
 loop = asyncio.new_event_loop()
 bot = Bot(token=config.BOT_TOKEN, parse_mode='HTML')
-dp = Dispatcher(bot, loop=loop)
+dp = Dispatcher(bot, loop=loop, storage=MemoryStorage())
 
-
-
-
-async def on_startup(dp):
-
-    print('Бот запущен')
-
-if __name__ == '__main__':
-    from aiogram import executor
-
-    executor.start_polling(dp, on_startup=on_startup)
-
+__all__ = ['bot', 'storage', 'dp', 'db']

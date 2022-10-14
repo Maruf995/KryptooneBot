@@ -1,12 +1,17 @@
-from distutils.command.config import config
 from gino import Gino
+
 import sqlalchemy as sa
 from typing import List
 import datetime
 from aiogram import Dispatcher
-from config import POSTGRES_URI
+
+from sqlalchemy import Column, BigInteger, String
+
+from data import config
 
 db = Gino()
+
+
 
 class BaseModel(db.Model):
     __abstract__ = True
@@ -22,6 +27,8 @@ class BaseModel(db.Model):
         values_str = " ".join(f"{name}={value!r}" for name, value in values.items())
         return f"<{model} {values_str}>"
 
+
+
 class TimedBaseModel(BaseModel):
     __abstract__ = True
 
@@ -32,6 +39,7 @@ class TimedBaseModel(BaseModel):
         onupdate=datetime.datetime.utcnow,
         server_default=db.func.now())
 
+
 async def on_startup(dispatcher: Dispatcher):
-    print('Установка связи С POSTGRESQL')
+    print('Установка связи с PostgreSQL')
     await db.set_bind(config.POSTGRES_URI)
